@@ -38,6 +38,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController inputController = TextEditingController();
   late WebSocketChannel webSocketChannel;
+  ScrollController scrollController = ScrollController();
 
   bool _ready = false;
 
@@ -97,8 +98,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
                 debugPrint('@debug->connected!!');
                 webSocketChannel.stream.listen((message) {
+                  // debugPrint('@debug->$message');
                   ChatResponseModel response =
-                      ChatResponseModel.formJson(jsonDecode(message));
+                      ChatResponseModel.fromJson(jsonDecode(message));
                   switch (response.cmd) {
                     case 0:
                       webSocketChannel.sink.add(jsonEncode({
@@ -115,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     /// List 목록
                     case 93102:
                       ChatMessageResponseModel<List<ChatMessageDataModel>>
-                          data = ChatMessageResponseModel.formJson(
+                          data = ChatMessageResponseModel.fromJson(
                               jsonDecode(message),
                               (p0) => List.from(p0)
                                   .map((e) => ChatMessageDataModel.fromJson(e))
@@ -123,6 +125,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
                       setState(() {
                         chatList.addAll(data.bdy);
+                      });
+                      debugPrint(
+                          '@debug scrollController.offset->${scrollController.offset}');
+                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                        scrollController.position.jumpTo(
+                            scrollController.position.maxScrollExtent * 2);
                       });
                       break;
 
@@ -133,7 +141,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       });
                       break;
                   }
-                  debugPrint('@debug->${message}');
                 });
 
                 webSocketChannel.sink.add(jsonEncode({
@@ -156,11 +163,18 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Expanded(
                 child: ListView.builder(
+                    controller: scrollController,
                     itemCount: chatList.length,
                     itemBuilder: (ctx, index) {
                       var chatData = chatList[index];
                       return Row(
-                        children: [Text(chatData.msg)],
+                        children: [
+                          // chatData.profile.profileImageUrl != null
+                          //     ? Image.network(chatData.profile.profileImageUrl!)
+                          //     : const SizedBox(),
+                          Text('${chatData.profile.nickname} : '),
+                          Text(chatData.msg)
+                        ],
                       );
                     }))
           ],
@@ -172,6 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     webSocketChannel.sink.close();
+    scrollController.dispose();
     inputController.dispose();
     super.dispose();
   }

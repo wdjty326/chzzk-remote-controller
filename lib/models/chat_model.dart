@@ -16,7 +16,7 @@ class ChatResponseModel {
 class ChatMessageResponseModel<T> extends ChatResponseModel {
   final String svcid;
   final String cid;
-  final String tid;
+  final String? tid;
   final T bdy;
 
   ChatMessageResponseModel({

@@ -10,7 +10,7 @@ class ChzzkAPICommonModel<T> {
   });
 
   factory ChzzkAPICommonModel.fromJson(
-      Map<String, dynamic> json, T Function(Map<String, dynamic>) toObject) {
+      Map<String, dynamic> json, T Function(dynamic) toObject) {
     return ChzzkAPICommonModel(
         code: json['code'],
         message: json['message'],
@@ -30,7 +30,7 @@ class ChzzkLiveDetail {
   final String? closeDate;
   final bool adult;
   final String chatChannelId;
-  final String categoryType;
+  final String? categoryType;
   final String liveCategory;
   final String liveCategoryValue;
   final bool chatActive;

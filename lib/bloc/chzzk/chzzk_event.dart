@@ -9,3 +9,12 @@ class ChzzkAccessTokenEvent extends ChzzkEvent {
 
   ChzzkAccessTokenEvent(this.channelId);
 }
+
+class ChzzkChatConnectEvent extends ChzzkEvent {
+  final String accessToken;
+  final String chatChannelId;
+
+  ChzzkChatConnectEvent(this.accessToken, this.chatChannelId);
+}
+
+class ChzzkChatDisconnectEvent extends ChzzkEvent {}

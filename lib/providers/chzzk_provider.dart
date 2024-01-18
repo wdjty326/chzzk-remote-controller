@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:chzzk_remote_controller/models/chzzk_model.dart';
+import 'package:chzzk_remote_controller/models/chzzk_api_model.dart';
 import 'package:http/http.dart' as Http;
 
 const APIBase = 'https://api.chzzk.naver.com';

@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:math';
 
-import 'package:chzzk_remote_controller/models/chzzk_model.dart';
+import 'package:chzzk_remote_controller/models/chzzk_api_model.dart';
+import 'package:chzzk_remote_controller/models/chzzk_chat_model.dart';
 import 'package:http/http.dart' as Http;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 const APIBase = 'https://api.chzzk.naver.com';
 const APIBaseCommon = 'https://comm-api.game.naver.com';
@@ -36,5 +39,13 @@ class ChzzkRepository {
     return ChzzkAPICommonModel.fromJson(
         jsonDecode(utf8.decode(response.bodyBytes)),
         (p0) => p0 != null ? ChzzkAccessToken.fromJson(Map.from(p0)) : null);
+  }
+
+  Future<WebSocketChannel> connectChatServer(
+      String accessToken, String chatChannelId) async {
+    WebSocketChannel webSocketChannel = WebSocketChannel.connect(Uri.parse(
+        'wss://${chzzkChatSessionServerList[Random().nextInt(5)]}/chat'));
+    await webSocketChannel.ready;
+    return webSocketChannel;
   }
 }

@@ -45,7 +45,7 @@ class ChatMessageDataModel {
   final String cid;
   final int mbrCnt;
   final String uid;
-  final ChatMessageProfileModel profile;
+  final ChatMessageProfileModel? profile;
   final String msg;
   final int msgTypeCode;
   final String msgStatusType;
@@ -83,7 +83,9 @@ class ChatMessageDataModel {
         msgStatusType: json['msgStatusType'],
         msgTime: json['msgTime'],
         msgTypeCode: json['msgTypeCode'],
-        profile: ChatMessageProfileModel.fromJson(jsonDecode(json['profile'])),
+        profile: json['profile'] != null
+            ? ChatMessageProfileModel.fromJson(jsonDecode(json['profile']))
+            : null,
         svcid: json['svcid'],
         uid: json['uid'],
         utime: json['utime'],
@@ -94,14 +96,15 @@ class ChatMessageDataModel {
 class ChatMessageExtraModel {
   final dynamic emojis;
   final String chatType;
-  final String osType;
-  final String streamingChannelId;
+  final bool isAnonymouse;
+  final String? streamingChannelId;
+  final List<ChatMessageWeeklyRankModel> weeklyRankList;
 
+  final String? osType;
   final String? payType;
   final int? payAmount;
   final String? nickname;
   final String? donationType;
-  final List<ChatMessageWeeklyRankModel>? weeklyRankList;
 
   ChatMessageExtraModel({
     required this.emojis,
@@ -113,6 +116,7 @@ class ChatMessageExtraModel {
     required this.streamingChannelId,
     required this.weeklyRankList,
     required this.chatType,
+    this.isAnonymouse = false,
   });
 
   factory ChatMessageExtraModel.fromJson(Map<String, dynamic> json) {
@@ -128,8 +132,9 @@ class ChatMessageExtraModel {
             ? List.from(json['weeklyRankList'])
                 .map((e) => ChatMessageWeeklyRankModel.fromJson(e))
                 .toList()
-            : null,
-        chatType: json['chatType']);
+            : [],
+        chatType: json['chatType'],
+        isAnonymouse: json['isAnonymouse'] ?? false);
   }
 }
 

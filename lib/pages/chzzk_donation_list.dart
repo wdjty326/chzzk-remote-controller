@@ -48,7 +48,7 @@ class _ChzzkDonationListState extends State<ChzzkDonationList> {
             setState(() {
               for (var element in state.list) {
                 if (element.extras?.payAmount != null) {
-                  donationList.add(element);
+                  donationList.insert(0, element);
                   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                     donationListScrollController.animateTo(0,
                         duration: const Duration(milliseconds: 1),
@@ -71,12 +71,18 @@ class _ChzzkDonationListState extends State<ChzzkDonationList> {
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.background,
               title: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SvgPicture.asset(
-                    'assets/images/logo.svg',
-                    width: 91,
-                    height: 30,
-                    fit: BoxFit.fitHeight,
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: SvgPicture.asset(
+                        'assets/images/logo.svg',
+                        width: 91,
+                        height: 30,
+                        fit: BoxFit.fitHeight,
+                      ),
+                    ),
                   ),
                   SizedBox(
                     width: 180,
@@ -84,9 +90,12 @@ class _ChzzkDonationListState extends State<ChzzkDonationList> {
                     child: TextField(
                       controller: inputController,
                       style: Theme.of(context).textTheme.displayMedium,
-                      decoration: const InputDecoration(
+                      maxLines: 3,
+                      minLines: 1,
+                      decoration: InputDecoration(
                         labelText: 'Channel URI',
                         hintText: 'Enter your Channel',
+                        hintStyle: Theme.of(context).textTheme.displayMedium,
                         labelStyle: TextStyle(color: Colors.redAccent),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -105,18 +114,21 @@ class _ChzzkDonationListState extends State<ChzzkDonationList> {
                       keyboardType: TextInputType.emailAddress,
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (ready) {
+                  IconButton(
+                      onPressed: () {
+                        if (ready) {
+                          BlocProvider.of<ChzzkBloc>(context)
+                              .add(ChzzkChatDisconnectEvent());
+                          return;
+                        }
                         BlocProvider.of<ChzzkBloc>(context)
-                            .add(ChzzkChatDisconnectEvent());
-                        return;
-                      }
-                      BlocProvider.of<ChzzkBloc>(context)
-                          .add(ChzzkAccessTokenEvent(inputController.text));
-                    },
-                    child: Text(ready ? 'Disconnect' : 'Connect'),
-                  ),
+                            .add(ChzzkAccessTokenEvent(inputController.text));
+                      },
+                      icon: Icon(
+                        Icons.settings_input_composite_rounded,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.primary,
+                      )), // Text(ready ? 'Disconnect' : 'Connect'),
                 ],
               ),
             ),
@@ -127,7 +139,6 @@ class _ChzzkDonationListState extends State<ChzzkDonationList> {
                   child: ListView.builder(
                       controller: donationListScrollController,
                       itemCount: donationList.length,
-                      reverse: true,
                       itemBuilder: (ctx, index) {
                         var donationData = donationList[index];
                         return Container(
@@ -135,7 +146,7 @@ class _ChzzkDonationListState extends State<ChzzkDonationList> {
                           padding: EdgeInsets.fromLTRB(6, 4, 6, 4),
                           child: Column(
                             children: [
-                              Text(donationData.profile.nickname),
+                              Text(donationData.profile?.nickname ?? '익명의 후원자'),
                               Text(donationData.msg),
                               Text(donationData.extras!.payAmount.toString())
                             ],
@@ -148,11 +159,11 @@ class _ChzzkDonationListState extends State<ChzzkDonationList> {
                     child: ListView.builder(
                         controller: chatListScrollController,
                         itemCount: chatList.length,
-                        itemExtent: 25,
+                        // itemExtent: 25,
                         itemBuilder: (ctx, index) {
                           var chatData = chatList[index];
                           var activityBadgeIndex = chatData
-                              .profile.activityBadges
+                              .profile!.activityBadges
                               .indexWhere((element) => element.activated);
 
                           return Row(
@@ -161,7 +172,7 @@ class _ChzzkDonationListState extends State<ChzzkDonationList> {
                               activityBadgeIndex != -1
                                   ? Image.network(
                                       chatData
-                                          .profile
+                                          .profile!
                                           .activityBadges[activityBadgeIndex]
                                           .imageUrl,
                                       width: 18,
@@ -170,9 +181,14 @@ class _ChzzkDonationListState extends State<ChzzkDonationList> {
                                     )
                                   : const SizedBox(),
                               const SizedBox(width: 4),
-                              Text(chatData.profile.nickname),
+                              Text(chatData.profile!.nickname),
                               const SizedBox(width: 12),
-                              Text(chatData.msg)
+                              Expanded(
+                                  child: Text(
+                                chatData.msg,
+                                maxLines: null,
+                                softWrap: true,
+                              ))
                             ],
                           );
                         }))

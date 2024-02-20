@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 
-class WindowTitlebar extends StatelessWidget {
+class WindowTitlebar extends StatelessWidget implements PreferredSizeWidget {
   const WindowTitlebar([Key? key]) : super(key: key);
 
   @override
+  Size get preferredSize => const Size.fromHeight(28);
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).colorScheme.background,
-      width: double.infinity,
-      height: 28,
-      child: Row(
+    return AppBar(
+      leadingWidth: double.infinity,
+      toolbarHeight: 28,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      leading: Row(
         children: [
           Expanded(child: GestureDetector(
             onTapDown: (detail) async {

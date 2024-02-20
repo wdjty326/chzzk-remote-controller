@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:chzzk_remote_controller/bloc/chzzk/chzzk_bloc.dart';
 import 'package:chzzk_remote_controller/pages/chzzk_donation_list.dart';
+import 'package:chzzk_remote_controller/pages/chzzk_login.dart';
 import 'package:chzzk_remote_controller/repository/chzzk_repository.dart';
 import 'package:chzzk_remote_controller/widgets/window_titlebar.dart';
 import 'package:flutter/material.dart';
@@ -98,12 +99,11 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Pretendard',
         useMaterial3: true,
       ),
-      home: BlocProvider<ChzzkBloc>(
-        create: (context) => ChzzkBloc(ChzzkRepository()),
-        child: const Column(
-          children: [WindowTitlebar(), Expanded(child: ChzzkDonationList())],
-        ),
-      ),
+      initialRoute: '/',
+      routes: {
+        ChzzkLogin.route: (context) => const ChzzkLogin(),
+        ChzzkDonationList.route: (context) => const ChzzkDonationList(),
+      },
     );
   }
 }

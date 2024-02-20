@@ -1,20 +1,48 @@
+import 'package:chzzk_remote_controller/arguments/chzzk_donation_list_arguments.dart';
 import 'package:chzzk_remote_controller/bloc/chzzk/chzzk_bloc.dart';
 import 'package:chzzk_remote_controller/bloc/chzzk/chzzk_event.dart';
 import 'package:chzzk_remote_controller/bloc/chzzk/chzzk_state.dart';
 import 'package:chzzk_remote_controller/models/chzzk_chat_model.dart';
+import 'package:chzzk_remote_controller/repository/chzzk_repository.dart';
+import 'package:chzzk_remote_controller/widgets/window_titlebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class ChzzkDonationList extends StatefulWidget {
+class ChzzkDonationList extends StatelessWidget {
+  static const route = '/donation_list';
   const ChzzkDonationList({super.key});
 
   @override
-  State<ChzzkDonationList> createState() => _ChzzkDonationListState();
+  Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments
+        as ChzzkDonationListArguments?;
+    return Scaffold(
+      appBar: const WindowTitlebar(),
+
+      /// TODO::추후 ws연결은 전역처리가 필요할 수 있음
+      body: BlocProvider<ChzzkBloc>(
+        create: (context) => ChzzkBloc(ChzzkRepository()),
+        child: _ChzzkDonationListProvider(args?.userIdHash ?? ''),
+      ),
+    );
+  }
 }
 
-class _ChzzkDonationListState extends State<ChzzkDonationList> {
-  TextEditingController inputController = TextEditingController();
+class _ChzzkDonationListProvider extends StatefulWidget {
+  final String userIdHash;
+
+  const _ChzzkDonationListProvider(this.userIdHash, [Key? key])
+      : super(key: key);
+
+  @override
+  State<_ChzzkDonationListProvider> createState() =>
+      _ChzzkDonationListProviderState();
+}
+
+class _ChzzkDonationListProviderState
+    extends State<_ChzzkDonationListProvider> {
+  // TextEditingController inputController = TextEditingController();
   ScrollController chatListScrollController = ScrollController();
   ScrollController donationListScrollController = ScrollController();
 
@@ -22,6 +50,15 @@ class _ChzzkDonationListState extends State<ChzzkDonationList> {
   List<ChatMessageDataModel> donationList = [];
 
   bool ready = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.userIdHash.isNotEmpty) {
+      BlocProvider.of<ChzzkBloc>(context)
+          .add(ChzzkAccessTokenEvent(widget.userIdHash));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,51 +121,53 @@ class _ChzzkDonationListState extends State<ChzzkDonationList> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: 180,
-                    height: 35,
-                    child: TextField(
-                      controller: inputController,
-                      style: Theme.of(context).textTheme.displayMedium,
-                      maxLines: 3,
-                      minLines: 1,
-                      decoration: InputDecoration(
-                        labelText: 'Channel URI',
-                        hintText: 'Enter your Channel',
-                        hintStyle: Theme.of(context).textTheme.displayMedium,
-                        labelStyle: TextStyle(color: Colors.redAccent),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide:
-                              BorderSide(width: 1, color: Colors.redAccent),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          borderSide:
-                              BorderSide(width: 1, color: Colors.redAccent),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        ),
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        if (ready) {
-                          BlocProvider.of<ChzzkBloc>(context)
-                              .add(ChzzkChatDisconnectEvent());
-                          return;
-                        }
-                        BlocProvider.of<ChzzkBloc>(context)
-                            .add(ChzzkAccessTokenEvent(inputController.text));
-                      },
-                      icon: Icon(
-                        Icons.settings_input_composite_rounded,
-                        size: 20,
-                        color: Theme.of(context).colorScheme.primary,
-                      )), // Text(ready ? 'Disconnect' : 'Connect'),
+
+                  /// TODO::로그인으로 대체될 처리입니다
+                  // SizedBox(
+                  //   width: 180,
+                  //   height: 35,
+                  //   child: TextField(
+                  //     controller: inputController,
+                  //     style: Theme.of(context).textTheme.displayMedium,
+                  //     maxLines: 3,
+                  //     minLines: 1,
+                  //     decoration: InputDecoration(
+                  //       labelText: 'Channel URI',
+                  //       hintText: 'Enter your Channel',
+                  //       hintStyle: Theme.of(context).textTheme.displayMedium,
+                  //       labelStyle: TextStyle(color: Colors.redAccent),
+                  //       focusedBorder: OutlineInputBorder(
+                  //         borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  //         borderSide:
+                  //             BorderSide(width: 1, color: Colors.redAccent),
+                  //       ),
+                  //       enabledBorder: OutlineInputBorder(
+                  //         borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  //         borderSide:
+                  //             BorderSide(width: 1, color: Colors.redAccent),
+                  //       ),
+                  //       border: OutlineInputBorder(
+                  //         borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  //       ),
+                  //     ),
+                  //     keyboardType: TextInputType.emailAddress,
+                  //   ),
+                  // ),
+                  // IconButton(
+                  //     onPressed: () {
+                  //       if (ready) {
+                  //         BlocProvider.of<ChzzkBloc>(context)
+                  //             .add(ChzzkChatDisconnectEvent());
+                  //         return;
+                  //       }
+                  //       BlocProvider.of<ChzzkBloc>(context)
+                  //           .add(ChzzkAccessTokenEvent(inputController.text));
+                  //     },
+                  //     icon: Icon(
+                  //       Icons.settings_input_composite_rounded,
+                  //       size: 20,
+                  //       color: Theme.of(context).colorScheme.primary,
+                  //     )), // Text(ready ? 'Disconnect' : 'Connect'),
                 ],
               ),
             ),
@@ -198,9 +237,12 @@ class _ChzzkDonationListState extends State<ChzzkDonationList> {
 
   @override
   void dispose() {
+    if (ready) {
+      BlocProvider.of<ChzzkBloc>(context).add(ChzzkChatDisconnectEvent());
+    }
     chatListScrollController.dispose();
     donationListScrollController.dispose();
-    inputController.dispose();
+    // inputController.dispose();
     super.dispose();
   }
 }

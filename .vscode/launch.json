@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "chzzk_remote_controller",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "chzzk_remote_controller (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "chzzk_remote_controller (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "flutter-webview-windows",
+            "cwd": "packages\\flutter-webview-windows",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "flutter-webview-windows (profile mode)",
+            "cwd": "packages\\flutter-webview-windows",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "flutter-webview-windows (release mode)",
+            "cwd": "packages\\flutter-webview-windows",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

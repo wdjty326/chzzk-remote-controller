@@ -371,6 +371,31 @@ void Webview::RegisterEventHandlers() {
           })
           .Get(),
       &event_registrations_.contains_fullscreen_element_changed_token_);
+
+  /// 2024-02-21 JSESSIONID 추가
+  // webview_->add_WebResourceRequested(
+  //     Callback<ICoreWebView2WebResourceRequestedEventHandler>(
+  //         [this](ICoreWebView2* sender,
+  //                ICoreWebView2WebResourceRequestedEventArgs* args) -> HRESULT {
+  //           ICoreWebView2WebResourceRequest* request;
+  //           args->get_Request(&request);
+
+  //           ICoreWebView2HttpRequestHeaders* headers;
+  //           request->get_Headers(&headers);
+
+  //           if (webview_resource_request_callback_) {
+  //             LPWSTR* value;
+  //             headers->GetHeader(L"JSESSIONID", value);
+
+  //             std::wstring wString;
+  //             wString.append(value[0]);
+  //             webview_resource_request_callback_(std::string(wString.begin(), wString.end()));
+  //           }
+
+  //           return S_OK;
+  //         })
+  //         .Get(),
+  //     &event_registrations_.webview_resource_request_token_);
 }
 
 void Webview::SetSurfaceSize(size_t width, size_t height, float scale_factor) {

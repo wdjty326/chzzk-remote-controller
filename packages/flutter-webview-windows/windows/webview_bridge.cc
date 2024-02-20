@@ -299,11 +299,18 @@ void WebviewBridge::RegisterEventHandlers() {
              contains_fullscreen_element}});
         EmitEvent(event);
       });
+  // webview_->OnWebResourceRequested([this](std::string value) {
+  //   const auto event = flutter::EncodableValue(
+  //       flutter::EncodableMap{{flutter::EncodableValue(kEventType),
+  //                              flutter::EncodableValue("webResourceRequested")},
+  //                             {flutter::EncodableValue(kEventValue), value}});
+
+  //   EmitEvent(event);
+  // });
 }
 
 void WebviewBridge::OnPermissionRequested(
-    const std::string& url,
-    WebviewPermissionKind permissionKind,
+    const std::string& url, WebviewPermissionKind permissionKind,
     bool isUserInitiated,
     Webview::WebviewPermissionRequestedCompleter completer) {
   auto args = std::make_unique<flutter::EncodableValue>(flutter::EncodableMap{

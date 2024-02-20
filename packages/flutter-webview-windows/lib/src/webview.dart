@@ -159,6 +159,12 @@ class WebviewController extends ValueNotifier<WebviewValue> {
   Stream<bool> get containsFullScreenElementChanged =>
       _containsFullScreenElementChangedStreamController.stream;
 
+  // final StreamController<bool> _webResourceRequestController =
+  //     StreamController<bool>.broadcast();
+
+  // Stream<dynamic> get webResourceRequest =>
+  //     _webResourceRequestController.stream;
+
   WebviewController() : super(WebviewValue.uninitialized());
 
   /// Initializes the underlying platform view.
@@ -214,6 +220,9 @@ class WebviewController extends ValueNotifier<WebviewValue> {
           case 'containsFullScreenElementChanged':
             _containsFullScreenElementChangedStreamController.add(map['value']);
             break;
+          // case 'webResourceRequested':
+          //   _webResourceRequestController.add(map['value']);
+          //   break;
         }
       });
 

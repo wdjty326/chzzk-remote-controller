@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class ChatResponseModel {
+  /// 93101 :메세지
+  ///
   final int cmd;
-  final String ver;
+  final String ver; // '1'
 
   ChatResponseModel(this.cmd, this.ver);
 
@@ -14,7 +16,7 @@ class ChatResponseModel {
 }
 
 class ChatMessageResponseModel<T> extends ChatResponseModel {
-  final String svcid;
+  final String svcid; // 'game'
   final String cid;
   final String? tid;
   final T bdy;
@@ -41,18 +43,19 @@ class ChatMessageResponseModel<T> extends ChatResponseModel {
 }
 
 class ChatMessageDataModel {
-  final String svcid;
+  final String svcid; // 'game'
   final String cid;
   final int mbrCnt;
   final String uid;
   final ChatMessageProfileModel? profile;
   final String msg;
-  final int msgTypeCode;
+  final int msgTypeCode; // 1 채팅, 10 채팅 후원
   final String msgStatusType;
   final ChatMessageExtraModel? extras;
   final int ctime;
   final int utime;
-  final int? msgTid;
+  final bool session;
+  final int msgTid;
   final int msgTime;
 
   ChatMessageDataModel({
@@ -66,7 +69,8 @@ class ChatMessageDataModel {
     required this.msgStatusType,
     required this.ctime,
     required this.extras,
-    this.msgTid,
+    this.msgTid = -1,
+    this.session = false,
     required this.msgTime,
     required this.utime,
   });
@@ -89,17 +93,19 @@ class ChatMessageDataModel {
         svcid: json['svcid'],
         uid: json['uid'],
         utime: json['utime'],
-        msgTid: json['msgTid']);
+        msgTid: json['msgTid'] ?? -1,
+        session: json['session'] ?? false);
   }
 }
 
 class ChatMessageExtraModel {
-  final dynamic emojis;
-  final String chatType;
+  final String chatType; // STRAMING
   final bool isAnonymouse;
-  final String? streamingChannelId;
+  final String streamingChannelId;
   final List<ChatMessageWeeklyRankModel> weeklyRankList;
+  final String extraToken;
 
+  final Map<String, dynamic>? emojis;
   final String? osType;
   final String? payType;
   final int? payAmount;
@@ -116,25 +122,27 @@ class ChatMessageExtraModel {
     required this.streamingChannelId,
     required this.weeklyRankList,
     required this.chatType,
-    this.isAnonymouse = false,
+    required this.isAnonymouse,
+    required this.extraToken,
   });
 
   factory ChatMessageExtraModel.fromJson(Map<String, dynamic> json) {
     return ChatMessageExtraModel(
         donationType: json['donationType'],
-        emojis: json['emojis'],
+        emojis: json['emojis'] != null ? Map.from(json['emojis']) : null,
         nickname: json['nickname'],
         osType: json['osType'],
         payAmount: json['payAmount'],
         payType: json['payType'],
-        streamingChannelId: json['streamingChannelId'],
+        streamingChannelId: json['streamingChannelId'] ?? '',
         weeklyRankList: json['weeklyRankList'] != null
             ? List.from(json['weeklyRankList'])
                 .map((e) => ChatMessageWeeklyRankModel.fromJson(e))
                 .toList()
             : [],
-        chatType: json['chatType'],
-        isAnonymouse: json['isAnonymouse'] ?? false);
+        chatType: json['chatType'] ?? 'STRAMING',
+        isAnonymouse: json['isAnonymouse'] ?? false,
+        extraToken: json['extraToken'] ?? '');
   }
 }
 
@@ -173,7 +181,7 @@ class ChatMessageProfileModel {
   final bool verifiedMark;
   final List<ChatMessageBadgesModel> activityBadges;
 
-  /// streamingProperty
+  final ChatStreamingProperty? streamingProperty;
 
   ChatMessageProfileModel({
     required this.activityBadges,
@@ -184,6 +192,7 @@ class ChatMessageProfileModel {
     required this.userIdHash,
     required this.userRoleCode,
     required this.verifiedMark,
+    this.streamingProperty,
   });
 
   factory ChatMessageProfileModel.fromJson(Map<String, dynamic> json) {
@@ -197,7 +206,10 @@ class ChatMessageProfileModel {
         title: json['title'],
         userIdHash: json['userIdHash'],
         userRoleCode: json['userRoleCode'],
-        verifiedMark: json['verifiedMark']);
+        verifiedMark: json['verifiedMark'],
+        streamingProperty: json['streamingProperty'] != null
+            ? ChatStreamingProperty.fromJson(json['streamingProperty'])
+            : null);
   }
 }
 
@@ -205,26 +217,71 @@ class ChatMessageBadgesModel {
   final int badgeNo;
   final String badgeId;
   final String imageUrl;
-  final String title;
-  final String description;
+  // final String title;
+  // final String description;
   final bool activated;
 
-  ChatMessageBadgesModel(
-      {required this.activated,
-      required this.badgeId,
-      required this.badgeNo,
-      required this.description,
-      required this.imageUrl,
-      required this.title});
+  ChatMessageBadgesModel({
+    required this.activated,
+    required this.badgeId,
+    required this.badgeNo,
+    // required this.title,
+    // required this.description,
+    required this.imageUrl,
+  });
 
   factory ChatMessageBadgesModel.fromJson(Map<String, dynamic> json) {
     return ChatMessageBadgesModel(
-        activated: json['activated'],
-        badgeId: json['badgeId'],
-        badgeNo: json['badgeNo'],
-        description: json['description'],
-        imageUrl: json['imageUrl'],
-        title: json['title']);
+      activated: json['activated'],
+      badgeId: json['badgeId'],
+      badgeNo: json['badgeNo'],
+      // description: json['description'],
+      // title: json['title'],
+      imageUrl: json['imageUrl'],
+    );
+  }
+}
+
+class ChatStreamingProperty {
+  final ChatStreamingPropertySubscription? subscription;
+
+  ChatStreamingProperty({
+    this.subscription,
+  });
+
+  factory ChatStreamingProperty.fromJson(Map<String, dynamic> json) {
+    return ChatStreamingProperty(
+        subscription: json['subscription'] != null
+            ? ChatStreamingPropertySubscription.fromJson(
+                Map.from(json['subscription']))
+            : null);
+  }
+}
+
+class ChatStreamingPropertyBadge {
+  final String imageUrl;
+  ChatStreamingPropertyBadge(this.imageUrl);
+  factory ChatStreamingPropertyBadge.fromJson(Map<String, dynamic> json) {
+    return ChatStreamingPropertyBadge(json['imageUrl']);
+  }
+}
+
+class ChatStreamingPropertySubscription {
+  final int accumulativeMonth;
+
+  final ChatStreamingPropertyBadge badge;
+
+  final int tier;
+
+  ChatStreamingPropertySubscription(
+      this.accumulativeMonth, this.badge, this.tier);
+
+  factory ChatStreamingPropertySubscription.fromJson(
+      Map<String, dynamic> json) {
+    return ChatStreamingPropertySubscription(
+        json['accumulativeMonth'],
+        ChatStreamingPropertyBadge.fromJson(Map.from(json['badge'])),
+        json['tier']);
   }
 }
 

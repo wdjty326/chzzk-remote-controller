@@ -99,7 +99,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Pretendard',
         useMaterial3: true,
       ),
-      initialRoute: '/',
+      initialRoute: ChzzkDonationList.route,
       routes: {
         ChzzkLogin.route: (context) => const ChzzkLogin(),
         ChzzkDonationList.route: (context) => const ChzzkDonationList(),

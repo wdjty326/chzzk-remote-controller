@@ -42,7 +42,7 @@ class _ChzzkDonationListProvider extends StatefulWidget {
 
 class _ChzzkDonationListProviderState
     extends State<_ChzzkDonationListProvider> {
-  // TextEditingController inputController = TextEditingController();
+  TextEditingController inputController = TextEditingController();
   ScrollController chatListScrollController = ScrollController();
   ScrollController donationListScrollController = ScrollController();
 
@@ -123,51 +123,52 @@ class _ChzzkDonationListProviderState
                   ),
 
                   /// TODO::로그인으로 대체될 처리입니다
-                  // SizedBox(
-                  //   width: 180,
-                  //   height: 35,
-                  //   child: TextField(
-                  //     controller: inputController,
-                  //     style: Theme.of(context).textTheme.displayMedium,
-                  //     maxLines: 3,
-                  //     minLines: 1,
-                  //     decoration: InputDecoration(
-                  //       labelText: 'Channel URI',
-                  //       hintText: 'Enter your Channel',
-                  //       hintStyle: Theme.of(context).textTheme.displayMedium,
-                  //       labelStyle: TextStyle(color: Colors.redAccent),
-                  //       focusedBorder: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  //         borderSide:
-                  //             BorderSide(width: 1, color: Colors.redAccent),
-                  //       ),
-                  //       enabledBorder: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  //         borderSide:
-                  //             BorderSide(width: 1, color: Colors.redAccent),
-                  //       ),
-                  //       border: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  //       ),
-                  //     ),
-                  //     keyboardType: TextInputType.emailAddress,
-                  //   ),
-                  // ),
-                  // IconButton(
-                  //     onPressed: () {
-                  //       if (ready) {
-                  //         BlocProvider.of<ChzzkBloc>(context)
-                  //             .add(ChzzkChatDisconnectEvent());
-                  //         return;
-                  //       }
-                  //       BlocProvider.of<ChzzkBloc>(context)
-                  //           .add(ChzzkAccessTokenEvent(inputController.text));
-                  //     },
-                  //     icon: Icon(
-                  //       Icons.settings_input_composite_rounded,
-                  //       size: 20,
-                  //       color: Theme.of(context).colorScheme.primary,
-                  //     )), // Text(ready ? 'Disconnect' : 'Connect'),
+                  SizedBox(
+                    width: 180,
+                    height: 35,
+                    child: TextField(
+                      controller: inputController,
+                      style: Theme.of(context).textTheme.displayMedium,
+                      maxLines: 3,
+                      minLines: 1,
+                      decoration: InputDecoration(
+                        labelText: 'Channel URI',
+                        hintText: 'Enter your Channel',
+                        hintStyle: Theme.of(context).textTheme.displayMedium,
+                        labelStyle: TextStyle(color: Colors.redAccent),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          borderSide:
+                              BorderSide(width: 1, color: Colors.redAccent),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          borderSide:
+                              BorderSide(width: 1, color: Colors.redAccent),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        if (ready) {
+                          BlocProvider.of<ChzzkBloc>(context)
+                              .add(ChzzkChatDisconnectEvent());
+                          return;
+                        }
+                        BlocProvider.of<ChzzkBloc>(context)
+                            .add(ChzzkAccessTokenEvent(inputController.text));
+                      },
+                      icon: Icon(
+                        Icons.settings_input_composite_rounded,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.primary,
+                      )),
+                  Text(ready ? 'Disconnect' : 'Connect'),
                 ],
               ),
             ),
@@ -242,7 +243,7 @@ class _ChzzkDonationListProviderState
     }
     chatListScrollController.dispose();
     donationListScrollController.dispose();
-    // inputController.dispose();
+    inputController.dispose();
     super.dispose();
   }
 }

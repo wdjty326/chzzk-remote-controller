@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-
 class ChatResponseModel {
   /// 93101 :메세지
   ///
@@ -10,8 +8,8 @@ class ChatResponseModel {
 
   ChatResponseModel(this.cmd, this.ver);
 
-  factory ChatResponseModel.fromJson(Map<String, dynamic> json) {
-    return ChatResponseModel(json['cmd'], json['ver'] ?? '2');
+  factory ChatResponseModel.fromJson(Map<String, dynamic> data) {
+    return ChatResponseModel(data['cmd'], data['ver'] ?? '2');
   }
 }
 
@@ -31,14 +29,14 @@ class ChatMessageResponseModel<T> extends ChatResponseModel {
   }) : super(cmd, ver);
 
   factory ChatMessageResponseModel.fromJson(
-      Map<String, dynamic> json, T Function(dynamic) toObject) {
+      Map<String, dynamic> data, T Function(dynamic) toObject) {
     return ChatMessageResponseModel(
-        ver: json['ver'],
-        cid: json['cid'],
-        cmd: json['cmd'],
-        svcid: json['svcid'],
-        tid: json['tid'],
-        bdy: toObject(json['bdy']));
+        ver: data['ver'],
+        cid: data['cid'],
+        cmd: data['cmd'],
+        svcid: data['svcid'],
+        tid: data['tid'],
+        bdy: toObject(data['bdy']));
   }
 }
 
@@ -75,26 +73,28 @@ class ChatMessageDataModel {
     required this.utime,
   });
 
-  factory ChatMessageDataModel.fromJson(Map<String, dynamic> json) {
+  factory ChatMessageDataModel.fromJson(Map<String, dynamic> data) {
     return ChatMessageDataModel(
-        cid: json['cid'],
-        ctime: json['ctime'],
-        extras: json['extras'] != null
-            ? ChatMessageExtraModel.fromJson(jsonDecode(json['extras']))
+        cid: data['cid'],
+        ctime: data['ctime'],
+        extras: data['extras'] != null
+            ? ChatMessageExtraModel.fromJson(
+                json.decode(data['extras'])) // jsonString 이기 때문에 변환 필요
             : null,
-        mbrCnt: json['mbrCnt'],
-        msg: json['msg'],
-        msgStatusType: json['msgStatusType'],
-        msgTime: json['msgTime'],
-        msgTypeCode: json['msgTypeCode'],
-        profile: json['profile'] != null
-            ? ChatMessageProfileModel.fromJson(jsonDecode(json['profile']))
+        mbrCnt: data['mbrCnt'],
+        msg: data['msg'],
+        msgStatusType: data['msgStatusType'],
+        msgTime: data['msgTime'],
+        msgTypeCode: data['msgTypeCode'],
+        profile: data['profile'] != null
+            ? ChatMessageProfileModel.fromJson(
+                json.decode(data['profile'])) // jsonString 이기 때문에 변환 필요
             : null,
-        svcid: json['svcid'],
-        uid: json['uid'],
-        utime: json['utime'],
-        msgTid: json['msgTid'] ?? -1,
-        session: json['session'] ?? false);
+        svcid: data['svcid'],
+        uid: data['uid'],
+        utime: data['utime'],
+        msgTid: data['msgTid'] ?? -1,
+        session: data['session'] ?? false);
   }
 }
 
@@ -126,23 +126,23 @@ class ChatMessageExtraModel {
     required this.extraToken,
   });
 
-  factory ChatMessageExtraModel.fromJson(Map<String, dynamic> json) {
+  factory ChatMessageExtraModel.fromJson(Map<String, dynamic> data) {
     return ChatMessageExtraModel(
-        donationType: json['donationType'],
-        emojis: json['emojis'] != null ? Map.from(json['emojis']) : null,
-        nickname: json['nickname'],
-        osType: json['osType'],
-        payAmount: json['payAmount'],
-        payType: json['payType'],
-        streamingChannelId: json['streamingChannelId'] ?? '',
-        weeklyRankList: json['weeklyRankList'] != null
-            ? List.from(json['weeklyRankList'])
+        donationType: data['donationType'],
+        emojis: data['emojis'] != null ? json.decode(data['emojis']) : null,
+        nickname: data['nickname'],
+        osType: data['osType'],
+        payAmount: data['payAmount'],
+        payType: data['payType'],
+        streamingChannelId: data['streamingChannelId'] ?? '',
+        weeklyRankList: data['weeklyRankList'] != null
+            ? List.from(data['weeklyRankList'])
                 .map((e) => ChatMessageWeeklyRankModel.fromJson(e))
                 .toList()
             : [],
-        chatType: json['chatType'] ?? 'STRAMING',
-        isAnonymouse: json['isAnonymouse'] ?? false,
-        extraToken: json['extraToken'] ?? '');
+        chatType: data['chatType'] ?? 'STRAMING',
+        isAnonymouse: data['isAnonymouse'] ?? false,
+        extraToken: data['extraToken'] ?? '');
   }
 }
 
@@ -161,13 +161,13 @@ class ChatMessageWeeklyRankModel {
     required this.ranking,
   });
 
-  factory ChatMessageWeeklyRankModel.fromJson(Map<String, dynamic> json) {
+  factory ChatMessageWeeklyRankModel.fromJson(Map<String, dynamic> data) {
     return ChatMessageWeeklyRankModel(
-        userIdHash: json['userIdHash'],
-        donationAmount: json['donationAmount'],
-        nickName: json['nickName'],
-        ranking: json['ranking'],
-        verifiedMark: json['verifiedMark']);
+        userIdHash: data['userIdHash'],
+        donationAmount: data['donationAmount'],
+        nickName: data['nickName'],
+        ranking: data['ranking'],
+        verifiedMark: data['verifiedMark']);
   }
 }
 
@@ -195,20 +195,20 @@ class ChatMessageProfileModel {
     this.streamingProperty,
   });
 
-  factory ChatMessageProfileModel.fromJson(Map<String, dynamic> json) {
+  factory ChatMessageProfileModel.fromJson(Map<String, dynamic> data) {
     return ChatMessageProfileModel(
-        activityBadges: List.from(json['activityBadges'])
+        activityBadges: List.from(data['activityBadges'])
             .map((e) => ChatMessageBadgesModel.fromJson(e))
             .toList(),
-        badge: json['badge'],
-        nickname: json['nickname'],
-        profileImageUrl: json['profileImageUrl'],
-        title: json['title'],
-        userIdHash: json['userIdHash'],
-        userRoleCode: json['userRoleCode'],
-        verifiedMark: json['verifiedMark'],
-        streamingProperty: json['streamingProperty'] != null
-            ? ChatStreamingProperty.fromJson(json['streamingProperty'])
+        badge: data['badge'],
+        nickname: data['nickname'],
+        profileImageUrl: data['profileImageUrl'],
+        title: data['title'],
+        userIdHash: data['userIdHash'],
+        userRoleCode: data['userRoleCode'],
+        verifiedMark: data['verifiedMark'],
+        streamingProperty: data['streamingProperty'] != null
+            ? ChatStreamingProperty.fromJson(data['streamingProperty'])
             : null);
   }
 }
@@ -230,14 +230,14 @@ class ChatMessageBadgesModel {
     required this.imageUrl,
   });
 
-  factory ChatMessageBadgesModel.fromJson(Map<String, dynamic> json) {
+  factory ChatMessageBadgesModel.fromJson(Map<String, dynamic> data) {
     return ChatMessageBadgesModel(
-      activated: json['activated'],
-      badgeId: json['badgeId'],
-      badgeNo: json['badgeNo'],
-      // description: json['description'],
-      // title: json['title'],
-      imageUrl: json['imageUrl'],
+      activated: data['activated'],
+      badgeId: data['badgeId'],
+      badgeNo: data['badgeNo'],
+      // description: data['description'],
+      // title: data['title'],
+      imageUrl: data['imageUrl'],
     );
   }
 }
@@ -249,11 +249,11 @@ class ChatStreamingProperty {
     this.subscription,
   });
 
-  factory ChatStreamingProperty.fromJson(Map<String, dynamic> json) {
+  factory ChatStreamingProperty.fromJson(Map<String, dynamic> data) {
     return ChatStreamingProperty(
-        subscription: json['subscription'] != null
+        subscription: data['subscription'] != null
             ? ChatStreamingPropertySubscription.fromJson(
-                Map.from(json['subscription']))
+                Map.from(data['subscription']))
             : null);
   }
 }
@@ -261,8 +261,8 @@ class ChatStreamingProperty {
 class ChatStreamingPropertyBadge {
   final String imageUrl;
   ChatStreamingPropertyBadge(this.imageUrl);
-  factory ChatStreamingPropertyBadge.fromJson(Map<String, dynamic> json) {
-    return ChatStreamingPropertyBadge(json['imageUrl']);
+  factory ChatStreamingPropertyBadge.fromJson(Map<String, dynamic> data) {
+    return ChatStreamingPropertyBadge(data['imageUrl']);
   }
 }
 
@@ -277,11 +277,11 @@ class ChatStreamingPropertySubscription {
       this.accumulativeMonth, this.badge, this.tier);
 
   factory ChatStreamingPropertySubscription.fromJson(
-      Map<String, dynamic> json) {
+      Map<String, dynamic> data) {
     return ChatStreamingPropertySubscription(
-        json['accumulativeMonth'],
-        ChatStreamingPropertyBadge.fromJson(Map.from(json['badge'])),
-        json['tier']);
+        data['accumulativeMonth'],
+        ChatStreamingPropertyBadge.fromJson(Map.from(data['badge'])),
+        data['tier']);
   }
 }
 

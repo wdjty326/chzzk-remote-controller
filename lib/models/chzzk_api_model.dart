@@ -10,11 +10,11 @@ class ChzzkAPICommonModel<T> {
   });
 
   factory ChzzkAPICommonModel.fromJson(
-      Map<String, dynamic> json, T Function(dynamic) toObject) {
+      Map<String, dynamic> data, T Function(dynamic) toObject) {
     return ChzzkAPICommonModel(
-        code: json['code'],
-        message: json['message'],
-        content: toObject(json['content']));
+        code: data['code'],
+        message: data['message'],
+        content: toObject(data['content']));
   }
 }
 
@@ -71,31 +71,31 @@ class ChzzkLiveDetail {
     this.userAdultStatus,
   });
 
-  factory ChzzkLiveDetail.fromJson(Map<String, dynamic> json) {
+  factory ChzzkLiveDetail.fromJson(Map<String, dynamic> data) {
     return ChzzkLiveDetail(
-        liveId: json['liveId'],
-        liveTitle: json['liveTitle'],
-        status: json['status'],
-        liveImageUrl: json['liveImageUrl'],
-        defaultThumbnailImageUrl: json['defaultThumbnailImageUrl'],
-        concurrentUserCount: json['concurrentUserCount'],
-        accumulateCount: json['accumulateCount'],
-        openDate: json['openDate'],
-        closeDate: json['closeDate'],
-        adult: json['adult'],
-        chatChannelId: json['chatChannelId'],
-        categoryType: json['categoryType'],
-        liveCategory: json['liveCategory'],
-        liveCategoryValue: json['liveCategoryValue'],
-        chatActive: json['chatActive'],
-        chatAvailableGroup: json['chatAvailableGroup'],
-        paidPromotion: json['paidPromotion'],
-        chatAvailableCondition: json['chatAvailableCondition'],
-        minFollowerMinute: json['minFollowerMinute'],
-        livePlaybackJson: json['livePlaybackJson'],
-        channel: ChzzkChannelInfo.fromJson(json['channel']),
-        livePollingStatusJson: json['livePollingStatusJson'],
-        userAdultStatus: json['userAdultStatus']);
+        liveId: data['liveId'],
+        liveTitle: data['liveTitle'],
+        status: data['status'],
+        liveImageUrl: data['liveImageUrl'],
+        defaultThumbnailImageUrl: data['defaultThumbnailImageUrl'],
+        concurrentUserCount: data['concurrentUserCount'],
+        accumulateCount: data['accumulateCount'],
+        openDate: data['openDate'],
+        closeDate: data['closeDate'],
+        adult: data['adult'],
+        chatChannelId: data['chatChannelId'],
+        categoryType: data['categoryType'],
+        liveCategory: data['liveCategory'],
+        liveCategoryValue: data['liveCategoryValue'],
+        chatActive: data['chatActive'],
+        chatAvailableGroup: data['chatAvailableGroup'],
+        paidPromotion: data['paidPromotion'],
+        chatAvailableCondition: data['chatAvailableCondition'],
+        minFollowerMinute: data['minFollowerMinute'],
+        livePlaybackJson: data['livePlaybackJson'],
+        channel: ChzzkChannelInfo.fromJson(data['channel']),
+        livePollingStatusJson: data['livePollingStatusJson'],
+        userAdultStatus: data['userAdultStatus']);
   }
 }
 
@@ -112,12 +112,12 @@ class ChzzkChannelInfo {
     required this.verifiedMark,
   });
 
-  factory ChzzkChannelInfo.fromJson(Map<String, dynamic> json) {
+  factory ChzzkChannelInfo.fromJson(Map<String, dynamic> data) {
     return ChzzkChannelInfo(
-        channelId: json['channelId'],
-        channelName: json['channelName'],
-        channelImageUrl: json['channelImageUrl'],
-        verifiedMark: json['verifiedMark']);
+        channelId: data['channelId'],
+        channelName: data['channelName'],
+        channelImageUrl: data['channelImageUrl'],
+        verifiedMark: data['verifiedMark']);
   }
 }
 
@@ -133,13 +133,13 @@ class ChzzkAccessToken {
       required this.realNameAuth,
       required this.extraToken});
 
-  factory ChzzkAccessToken.fromJson(Map<String, dynamic> json) {
+  factory ChzzkAccessToken.fromJson(Map<String, dynamic> data) {
     return ChzzkAccessToken(
-        accessToken: json['accessToken'],
+        accessToken: data['accessToken'],
         temporaryRestrict:
-            ChzzkTemporaryRestrict.fromJson(json['temporaryRestrict']),
-        extraToken: json['extraToken'],
-        realNameAuth: json['realNameAuth']);
+            ChzzkTemporaryRestrict.fromJson(data['temporaryRestrict']),
+        extraToken: data['extraToken'],
+        realNameAuth: data['realNameAuth']);
   }
 }
 
@@ -156,11 +156,11 @@ class ChzzkTemporaryRestrict {
     this.createdTime,
   });
 
-  factory ChzzkTemporaryRestrict.fromJson(Map<String, dynamic> json) {
+  factory ChzzkTemporaryRestrict.fromJson(Map<String, dynamic> data) {
     return ChzzkTemporaryRestrict(
-        temporaryRestrict: json['temporaryRestrict'],
-        times: json['times'],
-        createdTime: json['createdTime'],
-        duration: json['duration']);
+        temporaryRestrict: data['temporaryRestrict'],
+        times: data['times'],
+        createdTime: data['createdTime'],
+        duration: data['duration']);
   }
 }
